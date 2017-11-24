@@ -5,14 +5,11 @@
 #	Clow Windy <clowwindy42@gmail.com>
 #	Max Lv <max.c.lv@gmail.com>
 # Histroy:
-# 2017/11/21	Zorro Bei	First release
+# 2017/11/21	Zorro Bei	v0.0.1
+# 2017/11/24	Zorro Bei	v0.0.2
+#	Check the system firstly
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
-
-# Getting the latest source code
-git clone https://github.com/shadowsocks/shadowsocks-libev.git
-cd shadowsocks-libev
-git submodule update --init --recursive
 
 # Installation of basic build dependencies
 if [ "$1" == "centos" -o "$1" == "fedora" -o "$1" == "rhel" ]; then
@@ -25,6 +22,11 @@ else
 	echo "Usage: $0 [centos|fefora|rhel|debian|ubuntu|arch]"
 	exit 1
 fi
+
+# Getting the latest source code
+git clone https://github.com/shadowsocks/shadowsocks-libev.git
+cd shadowsocks-libev
+git submodule update --init --recursive
 
 # Installation of Libsodium
 export LIBSODIUM_VER=1.0.13
