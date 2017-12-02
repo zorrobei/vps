@@ -1,0 +1,10 @@
+[Unit]
+Description=backup my server timer2
+
+[Timer]
+OnCalendar=Sun *-*-* 02:00:00
+Persistent=ture
+Unit=backup.service
+
+[Install]
+WantedBy=multi-user.target

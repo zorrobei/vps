@@ -1,0 +1,10 @@
+[Unit]
+Description=backup my server
+Requires=atd.service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "echo /backups/backup.sh | at now"
+
+[Install]
+WantedB=multi-user.target
