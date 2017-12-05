@@ -7,4 +7,4 @@ Type=simple
 ExecStart=/bin/bash -c "echo /backups/backup.sh | at now"
 
 [Install]
-WantedB=multi-user.target
+WantedBy=multi-user.target

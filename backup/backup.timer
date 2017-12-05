@@ -1,5 +1,5 @@
 [Unit]
-Description=backup my server timer2
+Description=backup my server timer
 
 [Timer]
 OnCalendar=Sun *-*-* 02:00:00
