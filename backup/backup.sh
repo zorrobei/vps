@@ -1,26 +1,21 @@
 #!/bin/bash
 # Program:
 #	The program saves the necessary data of your server.
-# History:
-# 2017/12/04	Zorro Bei	v0.0.1
-#	First release.
-# 2017/12/05	Zorro Bei	v0.0.2
-#	Saving the files through bzip2.
-#	Don't log files saved as default. If you want to save the log, use the parameter log.
-# 2017/12/07	Zorro Bei	V0.0.3
-#	Checking whether basedir exists. If not create the directionary.
 
-PATH=/bin:/sbin;/usr/bin;/usr/sbin:/usr/local/bin:/usr/local/sbin
+PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
 export PATH
 
 basedir=/backups
-source="/etc /home /root /var/lib /var/spool/{cron,at,mail}"
-target="${basedir}/backup-data-$(date +%Y-%m-%d).tar.gz"
+settings="/etc /usr/local "
+users="/root /home /var/spool/{cron, at, maila} "
+mongodb=/var/lib/mongo
+sources=$settings$users$mongodb
+target="$basedir/backup-$(date +%Y-%m-%d).tar.bz2"
 
-[ -d /backups ] || mkdir /backups
+[ -d $basedir ] || mkdir $basedir
 
 if [ "${1}" == "log" ]; then
-	tar -cjpvf ${target} ${source} &> ${basedir}/backup.log
+	tar -cjpvf $target $sources &> $basedir/backup.log
 else
-	tar -cjpf ${target} ${source}
+	tar -cjpf $target $sources
 fi
