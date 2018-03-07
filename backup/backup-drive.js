@@ -1,8 +1,7 @@
 /* eslint no-console: ['error', { allow: ['log']}] */
 var fs = require('fs');
 var readline = require('readline');
-var google = require('googleapis');
-var googleAuth = require('google-auth-library');
+var { google } = require('googleapis');
 
 var currentDate = getCurDate;
 var backup = {
@@ -11,9 +10,11 @@ var backup = {
 };
 
 // If modifying these scopes, delete your previously saved credentials at ~/.credentials/drive-backup.json
-var SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+var SCOPES = [
+  'https://www.googleapis.com/auth/drive.file'
+];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'drive-backup-.json';
+var TOKEN_PATH = TOKEN_DIR + 'backup-drive.json';
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -46,8 +47,8 @@ function authorize(credentials, callback) {
   var clientSecret = credentials.installed.client_secret;
   var clientId = credentials.installed.client_id;
   var redirectUrl = credentials.installed.redirect_uris[0];
-  var auth = new googleAuth();
-  var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
+  var OAuth2 = google.auth.OAuth2;
+  var oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, function(err, token) {
@@ -89,7 +90,7 @@ function getNewToken(oauth2Client, callback) {
 
       oauth2Client.credentials = token;
       storeToken(token);
-      callback(oauth2Client);
+      callback(oauth2Client, backup);
     });
   });
 }
@@ -119,9 +120,9 @@ function storeToken(token) {
  * @param {Object} file - The file to upload to google drive.
  */
 function uploadFile(auth, file) {
-  var service = google.drive('v3');
+  var drive = google.drive('v3');
 
-  service.files.create({
+  drive.files.create({
     auth: auth,
     resource: {
       name: file,

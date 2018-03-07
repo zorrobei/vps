@@ -7,7 +7,7 @@ export PATH
 
 basedir=/backups
 settings="/etc /usr/local "
-users="/root /home /var/spool/{cron, at, maila} "
+users="/root /home /var/spool/{cron|at|mail} "
 mongodb=/var/lib/mongo
 sources=$settings$users$mongodb
 target="$basedir/backup-$(date +%Y-%m-%d).tar.bz2"

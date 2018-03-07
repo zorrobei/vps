@@ -1,17 +1,21 @@
 {
-  "name": "backup",
+  "name": "backup-drive",
   "version": "1.0.0",
-  "description": "Back up to google drive.",
-  "main": "drive-backup.js",
-  "dependencies": {
-    "google-auth-library": "^0.12.0",
-    "googleapis": "^26.0.1"
-  },
-  "devDependencies": {},
+  "description": "Upload backup to google drive.",
   "keywords": [
     "backup",
+    "google",
     "drive"
   ],
+  "main": "drive-backup.js",
+  "repository": {
+    "url": "git+https://github.com/zorrobei/vps.git",
+    "type": "git"
+  },
+  "dependencies": {
+    "googleapis": "^27.0.0"
+  },
+  "devDependencies": {},
   "author": "Zorro Bei",
   "license": "GPL-3.0"
 }
