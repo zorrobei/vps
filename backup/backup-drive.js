@@ -6,7 +6,7 @@ var { google } = require('googleapis');
 var currentDate = getCurDate;
 var backup = {
   type: 'application/x-bzip2',
-  path: '/backups/backup-' + currentDate + '.tar.bz2'
+  path: '/backups/backup-' + currentDate() + '.tar.bz2'
 };
 
 // If modifying these scopes, delete your previously saved credentials at ~/.credentials/drive-backup.json
