@@ -5,17 +5,18 @@
 PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin
 export PATH
 
-basedir=/backups
-settings="/etc /usr/local "
-users="/root /home /var/spool/{cron|at|mail} "
-mongodb=/var/lib/mongo
-sources=$settings$users$mongodb
-target="$basedir/backup-$(date +%Y-%m-%d).tar.bz2"
+basedir=/var/backups
+settings="/etc "
+users="/root /home "
+data="/var "
+excludes="/var/cache /var/run /var/tmp "$basedir
+sources=$settings$users$data
+target="$basedir/backup-$(date +%F).tar.xz"
 
 [ -d $basedir ] || mkdir $basedir
 
 if [ "${1}" == "log" ]; then
-	tar -cjpvf $target $sources &> $basedir/backup.log
+	tar -cJpvf $target --exclude=$excludes $sources &> $basedir/backup.log
 else
-	tar -cjpf $target $sources
+	tar -cJpf $target --exclude=$excludes $sources
 fi

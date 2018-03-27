@@ -1,20 +1,23 @@
 /* eslint no-console: ['error', { allow: ['log']}] */
-var fs = require('fs');
-var readline = require('readline');
-var { google } = require('googleapis');
+const fs = require('fs');
+const readline = require('readline');
+const { google } = require('googleapis');
 
-var currentDate = getCurDate;
-var backup = {
-  type: 'application/x-bzip2',
-  path: '/backups/backup-' + currentDate() + '.tar.bz2'
+const backup = {
+  type: 'application/x-xz',
+  dir: '/backups',
+  name: 'backup-' + getCurDate() + '.tar.xz',
+  getPath: () => {
+    return this.dir + '/' + this.name;
+  }
 };
 
 // If modifying these scopes, delete your previously saved credentials at ~/.credentials/drive-backup.json
-var SCOPES = [
+const SCOPES = [
   'https://www.googleapis.com/auth/drive.file'
 ];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'backup-drive.json';
+const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) + '/.credentials/';
+const TOKEN_PATH = TOKEN_DIR + 'backup-drive.json';
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
@@ -31,9 +34,13 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
  * Convert current date to string.
  */
 function getCurDate() {
-  var curDate = new Date();
+  let curDate = new Date();
 
-  curDate = curDate.toJSON().slice(0, 10);
+  curDate = curDate.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
   return curDate;
 }
 
@@ -44,11 +51,11 @@ function getCurDate() {
  * @param {Function} callback - The callback to call with the authorized client.
  */
 function authorize(credentials, callback) {
-  var clientSecret = credentials.installed.client_secret;
-  var clientId = credentials.installed.client_id;
-  var redirectUrl = credentials.installed.redirect_uris[0];
-  var OAuth2 = google.auth.OAuth2;
-  var oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
+  const clientSecret = credentials.installed.client_secret;
+  const clientId = credentials.installed.client_id;
+  const redirectUrl = credentials.installed.redirect_uris[0];
+  const OAuth2 = google.auth.OAuth2;
+  const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, function(err, token) {
@@ -68,14 +75,14 @@ function authorize(credentials, callback) {
  * @param {getEventsCallback} callback - The callback to call with the authorized OAuth2 client.
  */
 function getNewToken(oauth2Client, callback) {
-  var authUrl = oauth2Client.generateAuthUrl({
+  const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES
   });
 
   console.log('Authorize this app by visiting this url: ', authUrl);
 
-  var rl = readline.createInterface({
+  const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
@@ -120,24 +127,24 @@ function storeToken(token) {
  * @param {Object} file - The file to upload to google drive.
  */
 function uploadFile(auth, file) {
-  var drive = google.drive('v3');
+  const drive = google.drive('v3');
 
   drive.files.create({
     auth: auth,
     resource: {
-      name: file,
+      name: file.name,
       mimeType: file.type
     },
     media: {
       mimeType: file.type,
-      body: fs.createReadStream(file.path)
+      body: fs.createReadStream(file.getPath())
     },
     fields: 'id'
-  }, function(err, file) {
+  }, function(err, id) {
     if (err) {
       console.log('Error', err);
     } else {
-      console.log('File Id: ', file.id);
+      console.log('File Id: ', id);
     }
   });
 }
