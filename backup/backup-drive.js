@@ -5,9 +5,9 @@ const { google } = require('googleapis');
 
 const backup = {
   type: 'application/x-xz',
-  dir: '/backups',
+  dir: '/var/backups',
   name: 'backup-' + getCurDate() + '.tar.xz',
-  getPath: () => {
+  getPath: function getPath() {
     return this.dir + '/' + this.name;
   }
 };
@@ -139,12 +139,12 @@ function uploadFile(auth, file) {
       mimeType: file.type,
       body: fs.createReadStream(file.getPath())
     },
-    fields: 'id'
-  }, function(err, id) {
+    fields: 'name'
+  }, (err, res) => {
     if (err) {
-      console.log('Error', err);
+      console.log('Error while upload file: ', err);
     } else {
-      console.log('File Id: ', id);
+      console.log('Upload backup successfully: ' + res.data.name);
     }
   });
 }
