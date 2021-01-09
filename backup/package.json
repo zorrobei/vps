@@ -13,9 +13,8 @@
     "type": "git"
   },
   "dependencies": {
-    "googleapis": "^27.0.0"
+    "googleapis": "^67.0.0"
   },
-  "devDependencies": {},
   "author": "Zorro Bei",
   "license": "GPL-3.0"
 }
